@@ -25,5 +25,5 @@ hs_err_pid*
 /.idea
 /target
 *.iml
-/src/main/resources/input.json
+/src/main/resources/input3_0.json
 *.json
