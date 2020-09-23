@@ -24,11 +24,20 @@ public class Main {
     private static Logger log = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
-        String json = getStringFromFile("./src/main/resources/input3_0.json");
-        processContract(json);
+        String json = null;
+        try {
+            json = getStringFromFile("./src/main/resources/input3_0.json");
+            processContract(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        json = getStringFromURL("https://gateway.marvel.com/docs/public");
-        processContract(json);
+        try {
+            json = getStringFromURL("https://gateway.marvel.com/docs/public");
+            processContract(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void processContract(String json) {
