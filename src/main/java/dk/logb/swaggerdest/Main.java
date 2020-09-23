@@ -4,7 +4,6 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.PathNotFoundException;
 import net.minidev.json.JSONArray;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -21,7 +20,7 @@ enum Version {
 }
 
 public class Main {
-    private static Logger log = Logger.getLogger(Main.class.getName());
+    private static final Logger log = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
         String json = getStringFromFile("./src/main/resources/input3_0.json");
@@ -66,8 +65,7 @@ public class Main {
     public static String getStringFromFile(String path) {
         Path path1 = Paths.get(path);
         try {
-            String s = Files.readString(path1);
-            return s;
+            return Files.readString(path1);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
