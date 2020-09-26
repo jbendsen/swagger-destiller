@@ -17,18 +17,24 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 enum Version {
-    SWAGGER_1_0, OPEN_API_3_0
+    SWAGGER_1_0, OPEN_API_3_0, SWAGGER_2_0
 }
 
 public class Main {
     private static Logger log = Logger.getLogger(Main.class.getName());
 
     public static void main(String[] args) {
+        String json = getStringFromFile("./src/main/resources/input.json");
+        processContract(json);
+
+/*
         String json = getStringFromFile("./src/main/resources/input3_0.json");
         processContract(json);
 
         json = getStringFromURL("https://gateway.marvel.com/docs/public");
         processContract(json);
+        */
+
     }
 
     private static void processContract(String json) {
@@ -37,6 +43,9 @@ public class Main {
             case SWAGGER_1_0:
                 processSwagger_1_0(json);
                 break;
+            case SWAGGER_2_0:
+                processOpenAPI_2_0(json);
+                break;
             case OPEN_API_3_0:
                 processOpenAPI_3_0(json);
                 break;
@@ -44,6 +53,17 @@ public class Main {
     }
 
     private static void processOpenAPI_3_0(String json) {
+        Map<String, String> out = JsonPath.read(json, "$.paths"); //3.0
+
+        long count = out.keySet().stream().count();
+        log.info("Resources in total: " + count);
+        List<String> collect = out.keySet().stream().sorted().collect(Collectors.toList());
+        for (String s : collect) {
+            System.out.println(s);
+        }
+    }
+
+    private static void processOpenAPI_2_0(String json) {
         Map<String, String> out = JsonPath.read(json, "$.paths"); //3.0
 
         long count = out.keySet().stream().count();
@@ -92,6 +112,10 @@ public class Main {
         String openAPIVersion = safeRead(json, "$.openapi");
         if (openAPIVersion != null && openAPIVersion.trim().startsWith("3.0")) {
             return Version.OPEN_API_3_0;
+        }
+        String swagger = safeRead(json, "$.swagger");
+        if (swagger != null && swagger.trim().startsWith("2.0")) {
+            return Version.SWAGGER_2_0;
         }
         throw new IllegalArgumentException("could not establish version");
 
